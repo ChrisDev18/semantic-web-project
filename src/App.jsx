@@ -1,6 +1,7 @@
 import Navbar from "./components/Navbar.jsx";
 import {APP_NAME} from "./lib/constants.js";
 import DustBackground from "./components/DustBackground.jsx";
+import SeriesPage from "./components/SeriesPage.jsx";
 import HomePage from "./components/HomePage.jsx";
 
 export default function App() {
@@ -11,8 +12,12 @@ export default function App() {
       <Navbar />
 
       <div className="flex flex-col flex-grow z-10">
-        {/*Each page will go here*/}
+        {/*
+        Each page will go here.
+        For now, you can comment/uncomment whichever pages you wish to see
+        */}
         <HomePage />
+        {/*<SeriesPage />*/}
       </div>
 
       <footer className="text-center p-4 z-10">
