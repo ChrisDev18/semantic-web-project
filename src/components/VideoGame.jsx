@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from 'prop-types';  // Import PropTypes
-import { fetchVideoGameData } from "../lib/videogame.js"; // Import the fetch function
+import { fetchVideoGameData } from "../lib/videogame.js";
+import {useParams} from "react-router-dom"; // Import the fetch function
 
-function VideoGame({ game }) {
+export default function VideoGame() {
+    // Get the passed id to a VideoGame
+    let { id } = useParams();
+
     const [gameDetails, setGameDetails] = useState([]);
     const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const games = await fetchVideoGameData(game.name); // Call the fetch function
+                const games = await fetchVideoGameData(id); // Call the fetch function
                 setGameDetails(games); // Update the state with fetched data
             } catch (error) {
                 setError(error.message); // If there's an error, set the error message
@@ -48,10 +52,3 @@ function VideoGame({ game }) {
         </div>
     );
 }
-
-// Define PropTypes for the component
-VideoGame.propTypes = {
-    game: PropTypes.object.isRequired, // game should be an object and is required
-};
-
-export default VideoGame;

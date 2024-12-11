@@ -24,17 +24,17 @@ export default function App() {
             <div className="flex flex-col flex-grow z-10">
                 {/* Simple Links for navigation */}
                 <div className="text-center mt-4">
-                    <Link to="/videoGame" className="text-blue-500 hover:text-blue-700">Go to VideoGame Page</Link>
+                    <Link to="/videoGame/Super Mario 64 DS" className="text-blue-500 hover:text-blue-700">Go to VideoGame Page</Link>
                     <br />
-                    <Link to="/series" className="text-blue-500 hover:text-blue-700">Go to Series Page</Link>
+                    <Link to="/series/Super Mario" className="text-blue-500 hover:text-blue-700">Go to Series Page</Link>
                 </div>
 
                 <Routes>
                     <Route path="/" element={<HomePage />} />
-                    <Route path="/videoGame" element={<VideoGame game={gameData} />} />
-                    <Route path="/series" element={<Series />} />
-                    <Route path="/gameCompany" element={<GameCompany />} />
-                    <Route path="/person" element={<Person />} />
+                    <Route path="/videoGame/:id" element={<VideoGame />} />
+                    <Route path="/series/:id" element={<Series />} />
+                    <Route path="/gameCompany/:id" element={<GameCompany />} />
+                    <Route path="/person/:id" element={<Person />} />
                     <Route path="*" element={<NotFound />} /> {/* 404 */}
                 </Routes>
             </div>

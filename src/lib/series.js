@@ -22,6 +22,8 @@ export async function getVideoGameSeriesById(SeriesName){
 
 
 
+getVideoGameSeriesById(seriesName);
+
 export async function getVideoGameSeriesByName(seriesName) {
   // Define query
   const query = `
