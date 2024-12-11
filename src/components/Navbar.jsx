@@ -1,19 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import logo from "/app_logo.svg";
 import { APP_NAME } from "../lib/constants.js";
 import {Link} from "react-router-dom";
 
 export default function Navbar() {
     const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedQuery, setDebouncedQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const fetchSuggestions = async (query) => {
-        if (!query) {
-            setSuggestions([]);
-            return;
-        }
+    // Debounce Effect
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedQuery(searchQuery);
+        }, 500); // 500ms delay
 
+        return () => {
+            clearTimeout(handler); // Clear the timeout on query change or unmount
+        };
+    }, [searchQuery]);
+
+    // Fetch Suggestions based on the debounced query
+    useEffect(() => {
+        if (debouncedQuery) {
+            fetchSuggestions(debouncedQuery);
+        } else {
+            setSuggestions([]);
+        }
+    }, [debouncedQuery]);
+
+    const fetchSuggestions = async (query) => {
         const endpoint = "https://dbpedia.org/sparql";
         const sparqlQuery = `
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
@@ -30,7 +46,6 @@ export default function Navbar() {
         LIMIT 10
         `;
 
-        // Construct the query URL
         const url = `${endpoint}?query=${encodeURIComponent(sparqlQuery)}&format=json`;
 
         setIsLoading(true);
@@ -62,14 +77,7 @@ export default function Navbar() {
     };
 
     const handleInputChange = (e) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-
-        if (query) {
-            fetchSuggestions(query);
-        } else {
-            setSuggestions([]);
-        }
+        setSearchQuery(e.target.value);
     };
 
     return (
