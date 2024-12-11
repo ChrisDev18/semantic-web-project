@@ -19,7 +19,7 @@ export default function VideoGame() {
                 setError(error.message); // If there's an error, set the error message
             }
         };
-        fetchData(); // Fetch the data when the component mounts
+        fetchData().then(); // Fetch the data when the component mounts
     }, []); // Empty dependency array means this effect runs once when the component mounts
 
     if (error) {
@@ -34,19 +34,16 @@ export default function VideoGame() {
             ) : (
                 <div>
                     {/*this map is useless since there will be just one element ?*/}
-                    {gameDetails.map((game, index) => (
-                        // eslint-disable-next-line react/jsx-key
-                        <div>
-                            <h2>{game.label}</h2>
-                            <p>{game.comment}</p>
-                            <p>Genre:{game.genre}</p>
-                            <p>Rating:{game.mc}</p>
-                            <p>Platforms: {game.platforms}</p>
-                            <p>Publisher: {game.publisher}</p>
-                            <p>Release Date: {game.releaseDate}</p>
-                            <p>Series: {game.series}</p>
-                        </div>
-                    ))}
+                    <div>
+                        <h2>{gameDetails.label}</h2>
+                        <p>{gameDetails.comment}</p>
+                        <p>Genre:{gameDetails.genre}</p>
+                        <p>Rating:{gameDetails.mc}</p>
+                        <p>Platforms: {gameDetails.platforms}</p>
+                        <p>Publisher: {gameDetails.publisher}</p>
+                        <p>Release Date: {gameDetails.releaseDate}</p>
+                        <p>Series: {gameDetails.series}</p>
+                    </div>
                 </div>
             )}
         </div>

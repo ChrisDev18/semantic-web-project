@@ -1,66 +1,53 @@
 import {SPARQL_ENDPOINT} from "./constants.js";
 
-export async function getVideoGameSeriesById(SeriesName){
- const query =  `
- PREFIX dbo: <http://dbpedia.org/ontology/>
- PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
- PREFIX foaf: <http://xmlns.com/foaf/0.1/>
-
- SELECT ?label ?abstract ?genre ?wikiPage
- WHERE {
-   ?series a dbo:VideoGameSeries ;
-           rdfs:label ?label ;
-           dbo:abstract ?abstract ;
-           dbo:genre ?genre ;
-           foaf:isPrimaryTopicOf ?wikiPage .
-   FILTER (lang(?label) = "en" && regex(?label, "^${seriesName}$", "i"))
- }
-`;  
-
-
-}
-
-
-
-getVideoGameSeriesById(seriesName);
-
-export async function getVideoGameSeriesByName(seriesName) {
+export async function fetchSeriesData(seriesName) {
   // Define query
   const query = `
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-
-    SELECT ?label ?abstract ?genre ?series
+    PREFIX dbr: <http://dbpedia.org/resource/>
+    
+    SELECT ?label ?comment (GROUP_CONCAT(?game; separator=", ") AS ?games)
     WHERE {
-      ?game a dbo:VideoGame ;
-            rdfs:label ?label ;
-            dbo:abstract ?abstract ;
-            dbo:series ?series ;
-            dbo:genre ?genre .
-      FILTER (lang(?label) = "en" && regex(?label, "${seriesName}", "i"))
+      dbr:${seriesName.replace(" ", "_")} rdfs:label ?label;
+                      dbp:game ?game;
+                      rdfs:comment ?comment.
+    
+      FILTER (lang(?label) = "en" && lang(?comment) = "en")
     }
+    GROUP BY ?label ?comment
   `;
 
-  // Make request
-  const response = await fetch(SPARQL_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/sparql-results+json',
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: `query=${encodeURIComponent(query)}`
-  });
+  try {
+    const response = await fetch(SPARQL_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/sparql-results+json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: `query=${encodeURIComponent(query)}`
+    });
 
-  if (!response.ok) {
-    throw new Error(`Request failed with status ${response.status}`);
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+
+    const data = await response.json();
+    const results = data.results.bindings;
+
+    if (results.length === 0) {
+      throw new Error("No data found for the provided game name.");
+    }
+
+    console.log(results);
+    // Format the results and return them
+    return {
+      label: results[0].label.value,
+      comment: results[0].comment.value,
+      games: results[0].games.value
+    };
+  } catch (error) {
+    console.error("Error fetching data: ", error);
+    throw new Error("Error fetching data: " + error.message);
   }
-
-  // Format results for UI and return
-  const data = await response.json();
-  const results = data.results.bindings;
-  return results.map(result => ({
-    name: result.label.value,
-    abstract: result.abstract.value,
-    genre: result.genre.value
-  }));
 }

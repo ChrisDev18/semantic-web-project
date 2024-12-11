@@ -9,6 +9,7 @@ import GameCompany from "./components/GameCompany.jsx";
 import Person from "./components/Person.jsx";
 import NotFound from "./components/NotFound.jsx";
 import React from "react";
+import {SkeletonTheme} from "react-loading-skeleton";
 
 export default function App() {
     const gameData = {
@@ -17,6 +18,7 @@ export default function App() {
     };
 
     return (
+      <SkeletonTheme baseColor="#202020" highlightColor="#444">
         <div className="relative flex flex-col h-screen bg-gray-950 text-white">
             <DustBackground />
             <Navbar />
@@ -43,5 +45,6 @@ export default function App() {
                 <p>Copyright © 2024 {APP_NAME}. Tous droits réservés.</p>
             </footer>
         </div>
+        </SkeletonTheme>
     );
 }

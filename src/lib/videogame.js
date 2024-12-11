@@ -57,16 +57,16 @@ export async function fetchVideoGameData(gameName) {
 
         console.log(results);
         // Format the results and return them
-        return results.map(result => ({
-            label: result.label.value,
-            comment: result.comment.value,
-            genre: result.genreValue.value,
-            mc: result.mc.value,
-            platforms: result.platforms.value,
-            publisher: result.publisher.value,
-            releaseDate: result.releaseDate.value,
-            series: result.series.value
-        }));
+        return {
+            label: results[0].label.value,
+            comment: results[0].comment.value,
+            genre: results[0].genreValue.value,
+            mc: results[0].mc.value,
+            platforms: results[0].platforms.value,
+            publisher: results[0].publisher.value,
+            releaseDate: results[0].releaseDate.value,
+            series: results[0].series.value
+        };
     } catch (error) {
         console.error("Error fetching data: ", error);
         throw new Error("Error fetching data: " + error.message);
