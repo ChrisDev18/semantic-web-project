@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import {Link} from "react-router-dom";
 
 export default function HomePage() {
   const words = ["jeux vidéo", "développeurs de jeux vidéo", "séries de jeux vidéo"];
