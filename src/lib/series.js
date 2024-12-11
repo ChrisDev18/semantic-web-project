@@ -1,5 +1,27 @@
 import {SPARQL_ENDPOINT} from "./constants.js";
 
+export async function getVideoGameSeriesById(SeriesName){
+ const query =  `
+ PREFIX dbo: <http://dbpedia.org/ontology/>
+ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+ SELECT ?label ?abstract ?genre ?wikiPage
+ WHERE {
+   ?series a dbo:VideoGameSeries ;
+           rdfs:label ?label ;
+           dbo:abstract ?abstract ;
+           dbo:genre ?genre ;
+           foaf:isPrimaryTopicOf ?wikiPage .
+   FILTER (lang(?label) = "en" && regex(?label, "^${seriesName}$", "i"))
+ }
+`;  
+
+
+}
+
+
+
 export async function getVideoGameSeriesByName(seriesName) {
   // Define query
   const query = `
