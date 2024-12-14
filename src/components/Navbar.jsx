@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import logo from "/app_logo.svg";
 import { APP_NAME } from "../lib/constants.js";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 export default function Navbar() {
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedQuery, setDebouncedQuery] = useState("");
     const [suggestions, setSuggestions] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate(); // Use navigate to programmatically change routes
 
     // Debounce Effect
     useEffect(() => {
@@ -36,11 +38,16 @@ export default function Navbar() {
         PREFIX dbo: <http://dbpedia.org/ontology/>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-        SELECT ?videoGame ?title
+        SELECT DISTINCT ?videoGame ?title
         WHERE {
-          ?videoGame rdf:type dbo:VideoGame .
-          ?videoGame rdfs:label ?title .
-          FILTER (lang(?title) = "en") # Ensure titles are in English
+          ?videoGame rdf:type dbo:VideoGame ;
+             rdfs:label ?title ;
+             dbo:genre ?genre ;
+             dbo:publisher ?publisher ;
+             dbo:releaseDate ?releaseDate ;
+             rdfs:comment ?comment .
+          
+          FILTER (lang(?title) = "en" && lang(?comment) = "en")
           FILTER (STRSTARTS(LCASE(?title), LCASE("${query}")))
         }
         LIMIT 10
@@ -79,6 +86,10 @@ export default function Navbar() {
     const handleInputChange = (e) => {
         setSearchQuery(e.target.value);
     };
+    const handleSuggestionClick = (title) => {
+        // Navigate to VideoGame page and pass the selected title
+        navigate(`/videogame/${encodeURIComponent(title)}`);
+    };
 
     return (
         <nav className="relative flex justify-between px-6 py-4 bg-gradient-to-b from-black w-full z-50">
@@ -115,7 +126,7 @@ export default function Navbar() {
                             <li
                                 key={suggestion.uri}
                                 className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-blue-600"
-                                onClick={() => window.open(suggestion.uri, "_blank")}
+                                onClick={() => handleSuggestionClick(suggestion.title)} // Navigate on click
                             >
                                 {suggestion.title || "No Title Available"}
                             </li>
