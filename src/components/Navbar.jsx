@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import logo from "/app_logo.svg";
 import { APP_NAME } from "../lib/constants.js";
-import {Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
     const [searchQuery, setSearchQuery] = useState("");
@@ -81,24 +81,36 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="flex justify-between px-6 py-4 z-10 bg-gradient-to-b from-black">
+        <nav className="relative flex justify-between px-6 py-4 bg-gradient-to-b from-black w-full z-50">
+            {/* Logo Section */}
             <Link to={"/"} className="flex items-center gap-2">
                 <img src={logo} alt={APP_NAME + " logo"} />
                 <p className="font-semibold">{APP_NAME}</p>
             </Link>
-            <div className="relative">
+
+            {/* Search Input Section */}
+            <div className="relative w-full max-w-xl">
                 <input
                     type="text"
                     placeholder="Rechercher..."
-                    className="px-4 py-2 text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-4 py-2 text-gray-800 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
                     value={searchQuery}
                     onChange={handleInputChange}
                 />
                 {isLoading && (
                     <div className="absolute top-2 right-2 text-gray-500">Loading...</div>
                 )}
+
+                {/* Suggestions List */}
                 {suggestions.length > 0 ? (
-                    <ul className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg max-h-40 overflow-y-auto">
+                    <ul
+                        className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-50"
+                        style={{
+                            maxHeight: "160px", // Limit the height of dropdown
+                            overflowY: "auto", // Vertical scroll
+                            overflowX: "hidden", // Prevent horizontal scroll
+                        }}
+                    >
                         {suggestions.map((suggestion) => (
                             <li
                                 key={suggestion.uri}
@@ -110,9 +122,9 @@ export default function Navbar() {
                         ))}
                     </ul>
                 ) : (
-                    !isLoading &&
-                    searchQuery && (
-                        <div className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg px-4 py-2 text-gray-500">
+                    !isLoading && searchQuery && (
+                        <div
+                            className="absolute left-0 mt-2 w-full bg-white border border-gray-300 rounded-lg shadow-lg px-4 py-2 text-gray-500">
                             No results found
                         </div>
                     )
