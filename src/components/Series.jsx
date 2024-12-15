@@ -1,6 +1,6 @@
 // eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from "react";
-import {useParams} from "react-router-dom";
+import {Link, useParams} from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import {fetchSeriesData} from "../lib/series.js";
 
@@ -15,7 +15,7 @@ export default function Series() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const series = await fetchSeriesData(id); // Call the fetch function
+        const series = await fetchSeriesData(decodeURIComponent(id)); // Call the fetch function
         console.log(series);
         setData(series); // Update the state with fetched data
       } catch (error) {
@@ -40,9 +40,15 @@ export default function Series() {
 
       {/*Right side*/}
       <div>
-        <ul>
-          {data?.games ?? <Skeleton/>}
-        </ul>
+        {data?.games &&
+          data.games.map((game) =>
+            <ul>
+              <Link to={"/videogame/" + encodeURIComponent(game)}>
+                {game ?? <Skeleton/>}
+              </Link>
+            </ul>
+          )
+        }
       </div>
     </div>
   );

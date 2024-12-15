@@ -1,19 +1,24 @@
-import {SPARQL_ENDPOINT} from "./constants.js";
+import {escapeSpecialCharacters, SPARQL_ENDPOINT} from "./constants.js";
 
 export async function fetchSeriesData(seriesName) {
+  seriesName = seriesName.replace(/ /g, "_");
+  seriesName = escapeSpecialCharacters(seriesName);
+
   // Define query
   const query = `
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX dbr: <http://dbpedia.org/resource/>
     
-    SELECT ?label ?comment (GROUP_CONCAT(?game; separator=", ") AS ?games)
+    SELECT ?label ?comment (GROUP_CONCAT(?gameLabel; separator=",") AS ?games)
     WHERE {
-      dbr:${seriesName.replace(" ", "_")} rdfs:label ?label;
+      dbr:${seriesName} rdfs:label ?label;
                       dbp:game ?game;
                       rdfs:comment ?comment.
-    
-      FILTER (lang(?label) = "en" && lang(?comment) = "en")
+      
+      ?game rdfs:label ?gameLabel.
+      
+      FILTER (lang(?label) = "en" && lang(?comment) = "en" && lang(?gameLabel) = "en")
     }
     GROUP BY ?label ?comment
   `;
@@ -44,7 +49,7 @@ export async function fetchSeriesData(seriesName) {
     return {
       label: results[0].label.value,
       comment: results[0].comment.value,
-      games: results[0].games.value
+      games: results[0].games.value.split(",")
     };
   } catch (error) {
     console.error("Error fetching data: ", error);

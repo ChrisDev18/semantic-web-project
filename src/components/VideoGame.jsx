@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom"; // Import useParams to get the dynamic part of the URL
-import { fetchVideoGameData } from "../lib/videogame.js"; // Import the fetch function
+import {fetchVideoGameData} from "../lib/videogame.js"; // Import the fetch function
 
 export default function VideoGame() {
     // Get the game title from the URL parameters
@@ -13,7 +13,7 @@ export default function VideoGame() {
         console.log("Fetching data for:", id);
         const fetchData = async () => {
             try {
-                const gameData = await fetchVideoGameData(id); // Fetch the game data using the title
+                const gameData = await fetchVideoGameData(decodeURIComponent(id)); // Fetch the game data using the title
                 setGameDetails(gameData); // Set the fetched data in state
             } catch (error) {
                 setError(error.message); // Handle error if any
