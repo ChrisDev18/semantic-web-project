@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import {Link, useParams} from "react-router-dom"; // Import useParams to get the dynamic part of the URL
-import {fetchVideoGameData} from "../lib/videogame.js"; // Import the fetch function
+import {Link, useNavigate, useParams} from "react-router-dom"; // Import useParams to get the dynamic part of the URL
+import {fetchVideoGameData} from "../lib/videogame.js";
+import {NotFoundError} from "../lib/constants.js"; // Import the fetch function
 
 export default function VideoGame() {
     // Get the game title from the URL parameters
     let { id } = useParams(); // Use the title from the URL
+    const nav = useNavigate()
     console.log("Current game title from URL:", id); // Log the title here to confirm
     const [gameDetails, setGameDetails] = useState({});
     const [error, setError] = useState(null);
@@ -16,6 +18,8 @@ export default function VideoGame() {
                 const gameData = await fetchVideoGameData(decodeURIComponent(id)); // Fetch the game data using the title
                 setGameDetails(gameData); // Set the fetched data in state
             } catch (error) {
+                if (error instanceof NotFoundError)
+                    return nav("/notfound", {replace: true});
                 setError(error.message); // Handle error if any
             }
         };

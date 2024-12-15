@@ -19,18 +19,11 @@ export default function App() {
 
     return (
       <SkeletonTheme baseColor="#202020" highlightColor="#444">
-        <div className="relative flex flex-col min-h-screen bg-gray-950 text-white">
+        <div className="relative flex flex-col min-h-screen bg-gradient-to-b from-black via-indigo-950-950 to-indigo-900 text-white">
             <DustBackground />
             <Navbar />
 
             <div className="flex flex-col flex-grow z-10">
-                {/* Simple Links for navigation */}
-                <div className="text-center mt-4">
-                    <Link to="/videoGame/Super Mario 64 DS" className="text-blue-500 hover:text-blue-700">Go to VideoGame Page</Link>
-                    <br />
-                    <Link to="/series/Super Mario" className="text-blue-500 hover:text-blue-700">Go to Series Page</Link>
-                </div>
-
                 <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/videoGame/:id" element={<VideoGame />} />

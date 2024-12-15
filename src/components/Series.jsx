@@ -1,12 +1,12 @@
-// eslint-disable-next-line no-unused-vars
 import React, {useEffect, useState} from "react";
-import {Link, useParams} from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
+import {Link, useNavigate, useParams} from "react-router-dom";
 import {fetchSeriesData} from "../lib/series.js";
+import {NotFoundError} from "../lib/constants.js";
 
 export default function Series() {
   // Get the passed id to a Series
   let {id} = useParams();
+  const nav = useNavigate();
 
   const [data, setData] = useState({});
   const [error, setError] = useState(null);
@@ -19,6 +19,8 @@ export default function Series() {
         console.log(series);
         setData(series); // Update the state with fetched data
       } catch (error) {
+        if (error instanceof NotFoundError)
+          return nav("/notfound", {replace: true});
         setError(error.message); // If there's an error, set the error message
       }
     };
@@ -47,9 +49,26 @@ export default function Series() {
               <ul className={"list-disc pl-6 space-y-1"}>
                 {data.games.map((game, i) =>
                   <li key={i}>
-                    <Link className={"text-blue-400 hover:text-blue-500 focus:text-blue-500 focus:outline-none hover:underline active:underline focus:underline focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150"} to={"/series/"+encodeURIComponent(game)}>
+                    <Link
+                      className={"text-blue-400 hover:text-blue-500 focus:text-blue-500 focus:outline-none hover:underline active:underline focus:underline focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150"}
+                      to={"/videoGame/" + encodeURIComponent(game)}>
                       {game}
                     </Link>
+                  </li>
+                )}
+              </ul>
+            ) : (
+              <p>N/A</p>
+            )}
+          </div>
+
+          <div>
+            <p className={"font-medium"}>Genres</p>
+            {data.genres ? (
+              <ul className={"list-disc pl-6 space-y-1"}>
+                {data.genres.map((genre, i) =>
+                  <li key={i}>
+                    {genre}
                   </li>
                 )}
               </ul>

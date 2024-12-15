@@ -14,6 +14,7 @@ export function escapeSpecialCharacters(input) {
     .replace(/\r/g, "\\r")   // Escape carriage returns
     .replace(/\t/g, "\\t")   // Escape tabs
     .replace(/\./g, "\\.")   // Escape periods (used in regex)
+    .replace(/:/g, "\\:")   // Escape periods (used in regex)
     .replace(/\+/g, "\\+")   // Escape plus (used in regex)
     .replace(/\*/g, "\\*")   // Escape asterisk (used in regex)
     .replace(/\?/g, "\\?")   // Escape question mark (used in regex)
@@ -38,4 +39,11 @@ export function flattenJSON(json) {
   }
 
   return simplified;
+}
+
+export class NotFoundError extends Error {
+  constructor(message) {
+    super(message); // Call the parent constructor with the message
+    this.name = "Not Found"; // Set the error name
+  }
 }

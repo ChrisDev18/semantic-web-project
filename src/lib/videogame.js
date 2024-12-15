@@ -1,4 +1,4 @@
-import {escapeSpecialCharacters, flattenJSON, SPARQL_ENDPOINT} from "./constants.js";
+import {escapeSpecialCharacters, flattenJSON, NotFoundError, SPARQL_ENDPOINT} from "./constants.js";
 
 // Function to fetch video game data by its name (e.g., The Legend of Zelda)
 export async function fetchVideoGames(gameName) {
@@ -104,47 +104,39 @@ export async function fetchVideoGameData(gameName) {
         GROUP BY ?label ?comment ?rating ?publisher ?releaseDate ?seriesLabel ?ageRating
     `;
 
-    try {
+    // Perform request
+    const response = await fetch(SPARQL_ENDPOINT, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/sparql-results+json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `query=${encodeURIComponent(query)}`
+    });
 
-        const response = await fetch(SPARQL_ENDPOINT, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/sparql-results+json',
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `query=${encodeURIComponent(query)}`
-        });
-
-        if (!response.ok) {
-            throw new Error(`Request failed with status ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.results.bindings.length === 0) {
-            throw new Error("No data found for the provided game name.");
-        }
-
-        let results = data.results.bindings[0];
-        if (! results)
-            throw new Error("No data found.");
-
-        // Flatten JSON to only access values of each key
-        results = flattenJSON(results);
-        console.log(results);
-
-        // Convert strings to lists and return
-        return {
-            ...results,
-            genres: results.genres ? results.genres.split(",") : null,
-            modes: results.modes ? results.modes.split(",") : null,
-            platforms: results.platforms ? results.platforms.split(",") : null
-        };
-
-    } catch (error) {
-
-        console.error("Error fetching data: ", error);
-        throw new Error("Error fetching data: " + error.message);
-
+    if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
     }
+
+    const data = await response.json();
+
+    // Check if anything was found
+    if (data.results.bindings.length === 0) {
+        throw new NotFoundError("No data found for the provided game name.");
+    }
+    let results = data.results.bindings[0];
+    if (! results)
+        throw new NotFoundError("No data found.");
+
+    // Flatten JSON to only access values of each key
+    results = flattenJSON(results);
+    console.log(results);
+
+    // Convert strings to lists and return
+    return {
+        ...results,
+        genres: results.genres ? results.genres.split(",") : null,
+        modes: results.modes ? results.modes.split(",") : null,
+        platforms: results.platforms ? results.platforms.split(",") : null
+    };
 }
