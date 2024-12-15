@@ -1,13 +1,13 @@
 import Navbar from "./components/Navbar.jsx";
 import { APP_NAME } from "./lib/constants.js";
 import DustBackground from "./components/DustBackground.jsx";
-import HomePage from "./components/HomePage.jsx";
+import HomePage from "./pages/HomePage.jsx";
 import { Link, Route, Routes } from "react-router-dom";
-import VideoGame from "./components/VideoGame.jsx";
-import Series from "./components/Series.jsx";
-import GameCompany from "./components/GameCompany.jsx";
-import Person from "./components/Person.jsx";
-import NotFound from "./components/NotFound.jsx";
+import VideoGame from "./pages/VideoGame.jsx";
+import Series from "./pages/Series.jsx";
+import GameCompany from "./pages/GameCompany.jsx";
+import Person from "./pages/Person.jsx";
+import NotFound from "./pages/NotFound.jsx";
 import React from "react";
 import {SkeletonTheme} from "react-loading-skeleton";
 
