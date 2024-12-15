@@ -136,9 +136,9 @@ export async function fetchVideoGameData(gameName) {
         // Convert strings to lists and return
         return {
             ...results,
-            genres: results.genres.split(","),
-            modes: results.modes.split(","),
-            platforms: results.platforms.split(",")
+            genres: results.genres ? results.genres.split(",") : null,
+            modes: results.modes ? results.modes.split(",") : null,
+            platforms: results.platforms ? results.platforms.split(",") : null
         };
 
     } catch (error) {

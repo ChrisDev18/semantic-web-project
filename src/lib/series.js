@@ -56,7 +56,7 @@ export async function fetchSeriesData(seriesName) {
     // Format the results and return them
     return {
       ...results,
-      games: results.games.split(","),
+      games: results.games ? results.games.split(",") : null,
     };
 
   } catch (error) {

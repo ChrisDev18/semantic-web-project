@@ -27,39 +27,95 @@ export default function VideoGame() {
     }
 
     return (
-        <div>
-            <h1>Video Game</h1>
+        <div className={"p-6"}>
+            <h1 className={"italic"}>Video game</h1>
             {!gameDetails.label ? (
                 <div>Loading...</div>
             ) : (
-              <div>
-                  <h2>{gameDetails.label}</h2>
+              <div className={"flex flex-col gap-2"}>
+                  <h2 className={"text-3xl font-bold"}>{gameDetails.label}</h2>
+
                   <p>{gameDetails.comment}</p>
-                  <p>Genre: {gameDetails.genres}</p>
-                  <p>Rating: {gameDetails.rating}</p>
-                  <p>Platforms: {gameDetails.platforms}</p>
-                  <p>Publisher: {gameDetails.publisher}</p>
-                  <p>Release Date: {gameDetails.releaseDate}</p>
-                  <Link to={"/series/"+encodeURIComponent(gameDetails.seriesLabel)}>Series: {gameDetails.seriesLabel}</Link>
-                  <p>Modes</p>
-                  <ul>
-                      {gameDetails.modes.map((mode, i) =>
-                        <li key={i}>
-                            {mode}
-                        </li>
-                      )}
-                  </ul>
 
-                  <p>Age Rating: {gameDetails.ageRating}</p>
 
-                  <p>Modes</p>
-                  <ul>
-                      {gameDetails.modes.map((mode, i) =>
-                        <li key={i}>
-                            {mode}
-                        </li>
+                  <div>
+                      <p className={"font-medium"}>Genres</p>
+                      {gameDetails.genres ? (
+                        <ul className={"list-disc pl-6 space-y-1"}>
+                            {gameDetails.genres.map((genre, i) =>
+                              <li key={i}>
+                                  {genre}
+                              </li>
+                            )}
+                        </ul>
+                      ) : (
+                        <p>N/A</p>
                       )}
-                  </ul>
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Rating (MC)</p>
+                      <p>{gameDetails.rating ?? "N/A"}</p>
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Platforms</p>
+                      {gameDetails.platforms ? (
+                        <ul className={"list-disc pl-6 space-y-1"}>
+                            {gameDetails.platforms.map((platform, i) =>
+                              <li key={i}>
+                                  {platform}
+                              </li>
+                            )}
+                        </ul>
+                      ) : (
+                        <p>N/A</p>
+                      )}
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Video game series</p>
+                      {gameDetails.seriesLabel ? (
+                        <Link className="text-blue-400 hover:text-blue-500 focus:text-blue-500 focus:outline-none hover:underline active:underline focus:underline focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                              to={"/series/" + encodeURIComponent(gameDetails.seriesLabel)}>
+                            {gameDetails.seriesLabel}
+                        </Link>
+                      ) : (
+                        <p>N/A</p>
+                      )}
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Modes</p>
+                      {gameDetails.modes ? (
+                        <ul className={"list-disc pl-6 space-y-1"}>
+                            {gameDetails.modes.map((mode, i) =>
+                              <li key={i}>
+                                  {mode}
+                              </li>
+                            )}
+                        </ul>
+                      ) : (
+                        <p>N/A</p>
+                      )}
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Publisher</p>
+                      <p>{gameDetails.publisher ?? "N/A"}</p>
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Release Date</p>
+                      <p>{gameDetails.releaseDate ?? "N/A"}</p>
+                  </div>
+
+                  <div>
+                      <p className={"font-medium"}>Age Rating</p>
+                      <p>{gameDetails.ageRating ?? "N/A"}</p>
+                  </div>
+
+
               </div>
             )}
         </div>
