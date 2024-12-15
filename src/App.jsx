@@ -19,7 +19,7 @@ export default function App() {
 
     return (
       <SkeletonTheme baseColor="#202020" highlightColor="#444">
-        <div className="relative flex flex-col h-screen bg-gray-950 text-white">
+        <div className="relative flex flex-col min-h-screen bg-gray-950 text-white">
             <DustBackground />
             <Navbar />
 

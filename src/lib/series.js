@@ -1,10 +1,12 @@
-import {escapeSpecialCharacters, SPARQL_ENDPOINT} from "./constants.js";
+import {escapeSpecialCharacters, flattenJSON, SPARQL_ENDPOINT} from "./constants.js";
 
 export async function fetchSeriesData(seriesName) {
+  // Replace spaces with underscores, and escape special characters
   seriesName = seriesName.replace(/ /g, "_");
   seriesName = escapeSpecialCharacters(seriesName);
 
-  // Define query
+  console.log("Fetching Series given label: " + seriesName)
+
   const query = `
     PREFIX dbo: <http://dbpedia.org/ontology/>
     PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -13,10 +15,9 @@ export async function fetchSeriesData(seriesName) {
     SELECT ?label ?comment (GROUP_CONCAT(?gameLabel; separator=",") AS ?games)
     WHERE {
       dbr:${seriesName} rdfs:label ?label;
-                      dbp:game ?game;
-                      rdfs:comment ?comment.
+      rdfs:comment ?comment.
       
-      ?game rdfs:label ?gameLabel.
+      OPTIONAL { dbr:${seriesName} dbp:game ?game. ?game rdfs:label ?gameLabel. }
       
       FILTER (lang(?label) = "en" && lang(?comment) = "en" && lang(?gameLabel) = "en")
     }
@@ -24,6 +25,7 @@ export async function fetchSeriesData(seriesName) {
   `;
 
   try {
+
     const response = await fetch(SPARQL_ENDPOINT, {
       method: 'POST',
       headers: {
@@ -38,21 +40,29 @@ export async function fetchSeriesData(seriesName) {
     }
 
     const data = await response.json();
-    const results = data.results.bindings;
 
-    if (results.length === 0) {
+    if (data.results.bindings.length === 0) {
       throw new Error("No data found for the provided game name.");
     }
 
+    let results = data.results.bindings[0];
+    if (! results)
+      throw new Error("No data found.");
+
+    // Flatten JSON to only access values of each key
+    results = flattenJSON(results);
     console.log(results);
+
     // Format the results and return them
     return {
-      label: results[0].label.value,
-      comment: results[0].comment.value,
-      games: results[0].games.value.split(",")
+      ...results,
+      games: results.games.split(","),
     };
+
   } catch (error) {
+
     console.error("Error fetching data: ", error);
     throw new Error("Error fetching data: " + error.message);
+
   }
 }

@@ -7,10 +7,35 @@ export function escapeSpecialCharacters(input) {
   }
 
   return input
-    .replace(/\\/g, "\\\\")  // Escape backslashes first
+    .replace(/\\/g, "\\\\")  // Escape backslashes
     .replace(/'/g, "\\'")    // Escape single quotes
     .replace(/"/g, '\\"')    // Escape double quotes
     .replace(/\n/g, "\\n")   // Escape newlines
     .replace(/\r/g, "\\r")   // Escape carriage returns
-    .replace(/\t/g, "\\t");  // Escape tabs
+    .replace(/\t/g, "\\t")   // Escape tabs
+    .replace(/\./g, "\\.")   // Escape periods (used in regex)
+    .replace(/\+/g, "\\+")   // Escape plus (used in regex)
+    .replace(/\*/g, "\\*")   // Escape asterisk (used in regex)
+    .replace(/\?/g, "\\?")   // Escape question mark (used in regex)
+    .replace(/\|/g, "\\|")   // Escape pipe (used in regex)
+    .replace(/\$/g, "\\$")   // Escape dollar sign (used in regex)
+    .replace(/\^/g, "\\^")   // Escape caret (used in regex)
+    .replace(/\(/g, "\\(")   // Escape opening parenthesis (used in regex)
+    .replace(/\)/g, "\\)")   // Escape closing parenthesis (used in regex)
+    .replace(/\[/g, "\\[")   // Escape opening square bracket (used in regex)
+    .replace(/\]/g, "\\]")   // Escape closing square bracket (used in regex)
+    .replace(/\{/g, "\\{")   // Escape opening curly brace
+    .replace(/\}/g, "\\}");  // Escape closing curly brace
+}
+
+export function flattenJSON(json) {
+  const simplified = {};
+
+  for (const key in json) {
+    if (json[key] && typeof json[key] === "object" && "value" in json[key]) {
+      simplified[key] = json[key].value;
+    }
+  }
+
+  return simplified;
 }

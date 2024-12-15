@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Import useParams to get the dynamic part of the URL
+import {Link, useParams} from "react-router-dom"; // Import useParams to get the dynamic part of the URL
 import {fetchVideoGameData} from "../lib/videogame.js"; // Import the fetch function
 
 export default function VideoGame() {
@@ -28,22 +28,39 @@ export default function VideoGame() {
 
     return (
         <div>
-            <h1>Game Detail:</h1>
+            <h1>Video Game</h1>
             {!gameDetails.label ? (
                 <div>Loading...</div>
             ) : (
-                <div>
-                    <h2>{gameDetails.label}</h2>
-                    <p>{gameDetails.comment}</p>
-                    <p>Genre: {gameDetails.genre}</p>
-                    <p>Rating: {gameDetails.rating}</p>
-                    <p>Platforms: {gameDetails.platforms}</p>
-                    <p>Publisher: {gameDetails.publisher}</p>
-                    <p>Release Date: {gameDetails.releaseDate}</p>
-                    <p>Series: {gameDetails.series}</p>
-                    <p>Age Rating: {gameDetails.ageRating}</p>
-                    <p>Modes: {gameDetails.modes}</p>
-                </div>
+              <div>
+                  <h2>{gameDetails.label}</h2>
+                  <p>{gameDetails.comment}</p>
+                  <p>Genre: {gameDetails.genres}</p>
+                  <p>Rating: {gameDetails.rating}</p>
+                  <p>Platforms: {gameDetails.platforms}</p>
+                  <p>Publisher: {gameDetails.publisher}</p>
+                  <p>Release Date: {gameDetails.releaseDate}</p>
+                  <Link to={"/series/"+encodeURIComponent(gameDetails.seriesLabel)}>Series: {gameDetails.seriesLabel}</Link>
+                  <p>Modes</p>
+                  <ul>
+                      {gameDetails.modes.map((mode, i) =>
+                        <li key={i}>
+                            {mode}
+                        </li>
+                      )}
+                  </ul>
+
+                  <p>Age Rating: {gameDetails.ageRating}</p>
+
+                  <p>Modes</p>
+                  <ul>
+                      {gameDetails.modes.map((mode, i) =>
+                        <li key={i}>
+                            {mode}
+                        </li>
+                      )}
+                  </ul>
+              </div>
             )}
         </div>
     );
